@@ -28,21 +28,10 @@ class CryptoPunksDataset(Dataset):
 
     def __getitem__(self, idx):
         img_path = self.img_paths[idx]
-        image = Image.open(img_path).convert("RGB")  # Convert image to RGB format
+        image = Image.open(img_path).convert("RGB")  
         if self.transform:
             image = self.transform(image)
         return image
-
-"""
-def VAELoss(reconstruction_x, x, mean, logvariance): 
-    # binary cross entropy loss function given categorical pixel values in data 
-    bin_cross_entropy = nn.BCELoss(reconstruction_x, x.view(x.shape(0), -1), reduction="sum")
-    # KL Divergence acts as regularization to learn standard normal representation in latent space 
-    kl_divergence = -0.5 * torch.sum(1 + logvariance - mean.pow(2) - logvariance.exp())
-    return bin_cross_entropy + kl_divergence
-"""
-import torch
-import torch.nn as nn
 
 class VAELoss(nn.Module):
     def __init__(self):
@@ -50,15 +39,7 @@ class VAELoss(nn.Module):
         self.bce_loss = nn.BCELoss(reduction='sum')
 
     def forward(self, recon_x, x, mean, logvariance):
-        # BCE Loss
         bce = self.bce_loss(recon_x, x)
-        
-        # KL Divergence
         kl_divergence = -0.5 * torch.sum(1 + logvariance - mean.pow(2) - logvariance.exp())
-        
-        # Total loss
         return bce + kl_divergence
 
-# Example usage:
-# loss_fn = VAELoss()
-# loss = loss_fn(recon_x, x, mu, logvar)
