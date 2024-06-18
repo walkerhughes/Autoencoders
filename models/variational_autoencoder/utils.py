@@ -28,7 +28,7 @@ class CryptoPunksDataset(Dataset):
 
     def __getitem__(self, idx):
         img_path = self.img_paths[idx]
-        image = Image.open(img_path).convert("RGB")  
+        image = Image.open(img_path)# .convert("RGB")  
         if self.transform:
             image = self.transform(image)
         return image
