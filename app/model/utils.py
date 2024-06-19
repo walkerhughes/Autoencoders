@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 
+
 class Encoder(nn.Module):
     def __init__(self, input_channels, hidden_dims, latent_dim):
         super(Encoder, self).__init__()
@@ -19,6 +20,7 @@ class Encoder(nn.Module):
         mean, logvariance = self.mean(x_encoded), self.logvariance(x_encoded)
         return mean, logvariance
 
+
 class Decoder(nn.Module):
     def __init__(self, latent_dim, hidden_dims, output_channels):
         super(Decoder, self).__init__()
@@ -34,6 +36,7 @@ class Decoder(nn.Module):
         x = self.fc(z)
         x = x.view(x.size(0), -1, 6, 6)  
         return self.decode(x)
+
 
 class VAE(nn.Module):
     def __init__(self, input_channels, hidden_dims, latent_dim, output_channels):
