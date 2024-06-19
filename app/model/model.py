@@ -89,34 +89,6 @@ def sample(model, num_samples, device):
     return model.decoder(z)
 
 
-def generate_vae_image():
-
-    model = VAE(input_channels=4, hidden_dims=128, latent_dim=64, output_channels=4)
-
-    model.load_state_dict(
-        torch.load('./variational_autoencoder.pth', map_location=torch.device('cpu'))
-    ) 
-
-    samples = sample(model, num_samples=1, device="cpu")
-    samples = samples.detach().cpu().numpy()
-    new_image = samples[0].transpose(1, 2, 0).astype(float)
-    reshaped = np.clip(new_image, 0, 1)*255
-    reshaped = reshaped.astype(np.uint8)
-
-    # Convert numpy array to PIL image
-    pil_image = Image.fromarray(reshaped)
-
-    # Save image to a bytes buffer
-    buffer = BytesIO()
-    pil_image.save(buffer, format="PNG")
-    buffer.seek(0)
-
-    # Encode image to base64
-    img_str = base64.b64encode(buffer.read()).decode('utf-8')
-
-    return {"image": img_str}
-
-
 def generate_vae_30e_image():
 
     model = VAE(input_channels=4, hidden_dims=128, latent_dim=64, output_channels=4)
