@@ -38,6 +38,7 @@ class Decoder(nn.Module):
 class VAE(nn.Module):
     def __init__(self, input_channels, hidden_dims, latent_dim, output_channels):
         super(VAE, self).__init__()
+        self.__dict__.update(locals())
         self.encoder = Encoder(input_channels, hidden_dims, latent_dim)
         self.decoder = Decoder(latent_dim, hidden_dims, output_channels)
         
@@ -51,3 +52,7 @@ class VAE(nn.Module):
         z = self.reparameterize(mu, logvar)
         recon_x = self.decoder(z)
         return recon_x, mu, logvar
+    
+    def sample(self, num_samples, device): 
+        z = torch.randn(num_samples, self.latent_dim).to(device)
+        return self.decoder(z)
