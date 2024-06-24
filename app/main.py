@@ -16,10 +16,6 @@ app.add_middleware(
 @app.get("/")
 def home(): 
     return {"status": "OK", "version": version}
-
-@app.post("/predict_kde")
-def predict_kde():
-    return generate_kde_image()  
     
 @app.post("/predict_vae_30e")
 def predict_vae():
