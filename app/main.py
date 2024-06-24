@@ -1,22 +1,32 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+from dataclasses import dataclass
+from pydantic import BaseModel
 from app.model.model import *
 
 app = FastAPI()
 
-# Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "https://whughes.vercel.app"],  # Allow requests from this origin
+    allow_origins=["http://localhost:3000", "https://whughes.vercel.app"],  # Allow requests from these origins
     allow_credentials=True,
-    allow_methods=["*"],  # Allow all methods (GET, POST, etc.)
-    allow_headers=["*"],  # Allow all headers
+    allow_methods=["*"],  
+    allow_headers=["*"],  
 )
+
+@dataclass 
+class DecoderModelPath(BaseModel): 
+    path: str 
+
+@dataclass 
+class ImageStr(BaseModel): 
+    image_string: str 
 
 @app.get("/")
 def home(): 
     return {"status": "OK", "version": version}
     
-@app.post("/predict_vae_30e")
-def predict_vae():
-    return generate_vae_30e_image() 
+@app.post("/predict", response_model = ImageStr)
+def predict_vae(model_path: DecoderModelPath):
+    return generate_vae_image(model_path.path)
