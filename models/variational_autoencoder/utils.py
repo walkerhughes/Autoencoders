@@ -28,18 +28,12 @@ class CryptoPunksDataset(Dataset):
 
     def __getitem__(self, idx):
         img_path = self.img_paths[idx]
-        image = Image.open(img_path)# .convert("RGB")  
+        image = Image.open(img_path)
         if self.transform:
             image = self.transform(image)
         return image
 
-class VAELoss(nn.Module):
-    def __init__(self):
-        super(VAELoss, self).__init__()
-        self.bce_loss = nn.BCELoss(reduction='sum')
 
-    def forward(self, recon_x, x, mean, logvariance):
-        bce = self.bce_loss(recon_x, x)
-        kl_divergence = -0.5 * torch.sum(1 + logvariance - mean.pow(2) - logvariance.exp())
-        return bce + kl_divergence
-
+def generate_latent_vectors(num_samples = 1, latent_dim = 64):
+    latent_vectors = torch.randn(num_samples, latent_dim)
+    return latent_vectors
