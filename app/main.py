@@ -15,18 +15,25 @@ app.add_middleware(
     allow_headers=["*"],  
 )
 
-@dataclass 
-class DecoderModelPath(BaseModel): 
-    path: str 
-
-@dataclass 
-class ImageStr(BaseModel): 
-    image_string: str 
-
 @app.get("/")
 def home(): 
     return {"status": "OK", "version": version}
     
-@app.post("/predict", response_model = ImageStr)
-def predict_vae(model_path: DecoderModelPath):
-    return generate_vae_image(model_path.path)
+@app.post("/predict_10e")
+def predict_vae():
+    return generate_image_10e()
+    
+@app.post("/predict_30e")
+def predict_vae():
+    return generate_image_30e()
+    
+@app.post("/predict_50e")
+def predict_vae():
+    return generate_image_50e()
+
+
+if __name__ == "__main__":
+    import os 
+    import uvicorn
+    port = int(os.getenv("PORT", 8080))
+    uvicorn.run(app, host="0.0.0.0", port=port)
